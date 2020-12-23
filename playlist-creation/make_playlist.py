@@ -66,15 +66,15 @@ def main(config_path):
 
     config_dict = utils.read_yaml(config_path)
     num_of_tracks = config_dict["playlist_creation"]["params"]["num_of_tracks"]
-    genres_to_include = config_dict["playlist_creation"]["params"]["genres_to_include"]
-    genres_to_include_list = genres_to_include.replace(' ','').split(',')
-    genres_to_exclude = config_dict["playlist_creation"]["params"]["genres_to_exclude"]
+    include = config_dict["playlist_creation"]["params"]["include"]
+    include_list = include.replace(' ','').split(',')
+    exclude = config_dict["playlist_creation"]["params"]["exclude"]
 
-    if genres_to_exclude:
-        if ((len(genres_to_exclude) == 1) & (genres_to_exclude[0] == '')):
-            genres_to_exclude_list = genres_to_exclude.replace(' ','').split(',')
+    if exclude:
+        if ((len(exclude) == 1) & (exclude[0] == '')):
+            exclude_list = exclude.replace(' ','').split(',')
     else:
-        genres_to_exclude_list = None
+        exclude_list = None
 
     playlist_name = config_dict["playlist_creation"]["params"]["playlist_name"]
     filter_type = config_dict["playlist_creation"]["params"]["filter_type"]
@@ -95,7 +95,7 @@ def main(config_path):
     print("Reading in {0}".format(input_file))
     listening_history_df = pd.read_csv(input_file)
 
-    track_df = get_tracks(listening_history_df, num_of_tracks, filter_type, genres_to_include_list, genres_to_exclude_list)
+    track_df = get_tracks(listening_history_df, num_of_tracks, filter_type, include_list, exclude_list)
 
     print("Creating playlist {0}".format(playlist_name))
     new_playlist = create_playlist(spotify_user, token, playlist_name)
