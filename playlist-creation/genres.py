@@ -32,6 +32,9 @@ def query_artist(artist, token):
 
     response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
 
+    if response.status_code != 201:
+        print(response.text)
+
     return(response)
 
 def remove_special_characters(string_value):

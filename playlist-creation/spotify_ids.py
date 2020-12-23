@@ -26,6 +26,9 @@ def query_track(artist, album, track, token):
 
     response = requests.get('https://api.spotify.com/v1/search', headers=headers, params=params).json()
 
+    if response.status_code != 201:
+        print(response.text)
+
     return(response)
 
 def query_track_2(artist, track, token):
@@ -44,6 +47,9 @@ def query_track_2(artist, track, token):
 
     response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
 
+    if response.status_code != 201:
+        print(response.text)
+
     return(response)
 
 def query_track_3(track, token):
@@ -61,6 +67,9 @@ def query_track_3(track, token):
     )
 
     response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
+
+    if response.status_code != 201:
+        print(response.text)
 
     return(response)
 

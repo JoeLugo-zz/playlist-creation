@@ -71,7 +71,7 @@ def main(config_path):
     genres_to_exclude = config_dict["playlist_creation"]["params"]["genres_to_exclude"]
 
     if genres_to_exclude:
-        if ((len(genres_to_exclude)) & (genres_to_exclude[0] == '')):
+        if ((len(genres_to_exclude) == 1) & (genres_to_exclude[0] == '')):
             genres_to_exclude_list = genres_to_exclude.replace(' ','').split(',')
     else:
         genres_to_exclude_list = None
