@@ -1,0 +1,29 @@
+playlist_creation:
+  params:
+    num_of_tracks: 15
+    genres_to_include: "hip hop, rap"
+    genres_to_exclide: "christian"
+    playlist_name: First Test
+    filter_type: genres
+    input_file: ../saved_files/genres/genre_test.csv
+spotify:
+  credentials:
+    client_id:
+    client_secret:
+    spotify_user:
+pylast:
+  credentials:
+    username:
+    password:
+    api_key:
+    api_secret:
+  params:
+    start_date: '2020-12-04'
+    end_date: '2020-12-05'
+spotipy:
+  params:
+    redirect_uri: https://13.59.61.165
+file_output:
+  track_logs_file: ../saved_files/track_logs/track_logs_test.csv
+  track_ids_file: ../saved_files/track_ids/track_ids_test.csv
+  genre_file: ../saved_files/genres/genre_test.csv
