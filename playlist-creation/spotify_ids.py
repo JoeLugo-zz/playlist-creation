@@ -1,3 +1,8 @@
+import sys
+
+arg = sys.argv[1]
+print(arg[::-1])
+
 import requests
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -142,3 +147,6 @@ def get_spotify_ids(config_path):
     filtered_df.to_csv(track_ids_file, index=False)
 
     return(filtered_df)
+
+if __name__== "__main__":
+  get_spotify_ids(arg)

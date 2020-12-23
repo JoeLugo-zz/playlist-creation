@@ -1,3 +1,8 @@
+import sys
+
+arg = sys.argv[1]
+print(arg[::-1])
+
 import pandas as pd
 import pylast
 import re
@@ -23,7 +28,7 @@ def parse_track_json(track_dict, a_track):
     except:
         track_dict["title"].append(np.nan)
     try:
-        track_dict["artist"].append(str(a_track.track.artist)) # make str to get the right output
+        track_dict["artist"].append(str(a_track.track.artist))
     except:
         track_dict["artist"].append(np.nan)
     try:
@@ -64,11 +69,8 @@ def query_track_data(config_path):
     unixtime_start = time.mktime(start_date.timetuple())
     unixtime_end = time.mktime(end_date.timetuple())
 
-    print("Getting recent tracks")
-    tracks = user.get_recent_tracks(time_from=unixtime_start, time_to=unixtime_end, limit=200, cacheable=True)
-    print("Done getting recent tracks")
-
-    # How can we speed this up ? Taking forever
+    print("Getting recent tracks, this might take some time")
+    tracks = user.get_recent_tracks(time_from=unixtime_start, time_to=unixtime_end, limit=None, cacheable=True)
 
     track_dict = {}
     track_dict["playback_date"] = []
@@ -89,3 +91,6 @@ def query_track_data(config_path):
     df.to_csv(track_logs_file, index=False)
 
     return(df)
+
+if __name__== "__main__":
+  query_track_data(arg)

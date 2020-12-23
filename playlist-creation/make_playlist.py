@@ -1,3 +1,8 @@
+import sys
+
+arg = sys.argv[1]
+print(arg[::-1])
+
 import pandas as pd
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -63,8 +68,14 @@ def main(config_path):
     num_of_tracks = config_dict["playlist_creation"]["params"]["num_of_tracks"]
     genres_to_include = config_dict["playlist_creation"]["params"]["genres_to_include"]
     genres_to_include_list = genres_to_include.replace(' ','').split(',')
-    genres_to_exclude = config_dict["playlist_creation"]["params"]["genres_to_exclide"]
-    genres_to_exclude_list = genres_to_exclude.replace(' ','').split(',')
+    genres_to_exclude = config_dict["playlist_creation"]["params"]["genres_to_exclude"]
+
+    if genres_to_exclude:
+        if ((len(genres_to_exclude)) & (genres_to_exclude[0] == '')):
+            genres_to_exclude_list = genres_to_exclude.replace(' ','').split(',')
+    else:
+        genres_to_exclude_list = None
+
     playlist_name = config_dict["playlist_creation"]["params"]["playlist_name"]
     filter_type = config_dict["playlist_creation"]["params"]["filter_type"]
 
@@ -72,7 +83,7 @@ def main(config_path):
     client_id = config_dict["spotify"]["credentials"]["client_id"]
     client_secret = config_dict["spotify"]["credentials"]["client_secret"]
 
-    input_file = config_dict["file_output"]["input_file"]
+    input_file = config_dict["playlist_creation"]["params"]["input_file"]
 
     redirect_uri = config_dict["spotipy"]["params"]["redirect_uri"]
 
@@ -81,16 +92,18 @@ def main(config_path):
     scope = 'playlist-modify-public'
     token = util.prompt_for_user_token(spotify_user, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
 
-    # comes from spotify_ids.py
+    print("Reading in {0}".format(input_file))
     listening_history_df = pd.read_csv(input_file)
 
     track_df = get_tracks(listening_history_df, num_of_tracks, filter_type, genres_to_include_list, genres_to_exclude_list)
 
+    print("Creating playlist {0}".format(playlist_name))
     new_playlist = create_playlist(spotify_user, token, playlist_name)
 
     playlist_id = json.loads(new_playlist.text)['id']
 
+    print("Adding tracks to playlist")
     add_tracks(playlist_id, track_df['spotify_id'].tolist(), token)
 
 if __name__== "__main__":
-  main("/Users/josephlugo/Code/Joe/top-tracks/top_tracks/common/common.yaml")
+  main(arg)

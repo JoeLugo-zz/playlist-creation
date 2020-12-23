@@ -1,3 +1,8 @@
+import sys
+
+arg = sys.argv[1]
+print(arg[::-1])
+
 import re
 import pandas as pd
 from datetime import date, datetime
@@ -144,7 +149,17 @@ def get_genres(config_path):
     joined_df['eastern_time'] = [gmt.localize(val).astimezone(eastern) for val in joined_df['playback_date_new']]
     joined_df['weekday'] = [val.weekday() for val in joined_df['eastern_time'].tolist()]
 
-    print("Writing to {0}".format(genre_file))
-    joined_df.to_csv(genre_file, index=False)
+    joined_df_sorted = joined_df.sort_values('eastern_time')
+    joined_df_sorted['lag_date'] = joined_df_sorted['eastern_time'].shift(1)
+    joined_df_sorted['diff'] = joined_df_sorted['eastern_time'] - joined_df_sorted['lag_date']
+    joined_df_sorted['diff_new'] = [(val.seconds)/60 for val in joined_df_sorted['diff']]
 
-    return(artist_id_df)
+    joined_df_sorted_filtered = joined_df_sorted[joined_df_sorted['diff_new'] > 0]
+
+    print("Writing to {0}".format(genre_file))
+    joined_df_sorted_filtered.to_csv(genre_file, index=False)
+
+    return(joined_df_sorted_filtered)
+
+if __name__== "__main__":
+  get_genres(arg)
