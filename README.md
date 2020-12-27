@@ -35,9 +35,11 @@ python make_playlist.py common/config.yaml
 
 #### Example
 Setting the config to create a playlist of the top 15 hip hop songs and making sure to filter out any of those christian or gospel hip hop songs haha:
+
 ![alt text](saved_files/images/config.png)
 
 After running `python make_playlist.py common/config.yaml` we can see this in spotify:
+
 ![alt text](saved_files/images/top_hip_hop.png)
 
 #### Coming Soon
