@@ -33,4 +33,18 @@ Connected to the Spotify API again to create the playlist:
 python make_playlist.py common/config.yaml
 ```
 
-![alt text](saved_files/top_hip_hop.png)
+#### Example
+Setting the config to create a playlist of the top 15 hip hop songs and making sure to filter out any of those christian or gospel hip hop songs haha:
+![alt text](saved_files/images/config.png)
+
+After running `python make_playlist.py common/config.yaml` we can see this in spotify:
+![alt text](saved_files/images/top_hip_hop.png)
+
+#### Coming Soon
+Analysis of my listening history including but not restricted to:
+- What do you listen to most?
+- Is there a pattern for when you listen to certain types of music?
+- Distribution of recency of music I listen to (ie. How much of each time period to I listen to?)
+- Most skipped song?
+- NLP if I'm feeling ambitious
+- And more!
