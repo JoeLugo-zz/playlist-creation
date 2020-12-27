@@ -21,8 +21,8 @@ pylast:
     api_key:
     api_secret:
   params:
-    start_date: '2020-12-04'
-    end_date: '2020-12-05'
+    start_date: "2020-12-04"
+    end_date: "2020-12-05"
 file_output:
   track_logs_file: ../saved_files/track_logs/track_logs_test.csv
   track_ids_file: ../saved_files/track_ids/track_ids_test.csv

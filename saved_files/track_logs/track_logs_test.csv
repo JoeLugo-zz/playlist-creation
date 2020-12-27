@@ -1,4 +1,7 @@
 playback_date,unix_timestamp,title,artist,album,duration
+"27 Dec 2020, 19:52",1609098749,Build My Life,Housefires,Housefires III,491000
+"27 Dec 2020, 19:45",1609098328,Open Space,Housefires,We Say Yes,456000
+"27 Dec 2020, 19:37",1609097837,Build My Life,Housefires,Housefires III,491000
 "27 Dec 2020, 16:52",1609087933,Champion,Maverick City Music,You Hold It All Together,0
 "27 Dec 2020, 16:38",1609087139,Refiner,Maverick City Music,Maverick City Vol. 2,0
 "27 Dec 2020, 16:28",1609086493,Promises,Maverick City Music,Maverick City Vol. 3 Part 1,646000
@@ -196,6 +199,3 @@ playback_date,unix_timestamp,title,artist,album,duration
 "20 Dec 2020, 20:40",1608496813,The Holly and the Ivy,Flatland Park,The First Noel,0
 "20 Dec 2020, 20:37",1608496647,Let It Snow! Let It Snow! Let It Snow!,The Arthur P. Dahl Ensemble,Let It Snow! Let It Snow! Let It Snow!,166000
 "20 Dec 2020, 20:34",1608496490,Here Comes Santa Claus,Rudy Snow,A Jazzy Christmas,156000
-"20 Dec 2020, 20:32",1608496376,It Came Upon the Midnight Clear,KTZ Players,It Came Upon the Midnight Clear,0
-"20 Dec 2020, 20:29",1608496192,Here We Come A-Caroling,Leif Shires,Jazzy Christmas Party,184000
-"20 Dec 2020, 20:26",1608496006,Santa Claus Is Coming To Town,Louis Brecker,Have Yourself A Jazzy Little Christmas,185000

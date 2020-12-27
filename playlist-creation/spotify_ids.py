@@ -34,10 +34,12 @@ def get_spotify_ids(config_path):
     names = []
     artists = []
     albums = []
+    release_dates = []
+    durations = []
     wrong_names = []
     wrong_artists = []
 
-    print("Getting spotify ids")
+    print("Getting spotify ids for {0} songs".format(len(filtered_df)))
 
     for i, row in filtered_df.iterrows():
         try:
@@ -74,16 +76,22 @@ def get_spotify_ids(config_path):
         name = track_object["name"]
         artist = track_object["artists"][0]["name"]
         album = track_object["album"]["name"]
+        release_date = track_object["album"]["release_date"]
+        duration_ms = track_object["duration_ms"]
 
         ids.append(id)
         names.append(name)
         artists.append(artist)
         albums.append(album)
+        release_dates.append(release_date)
+        durations.append(duration_ms)
 
     filtered_df["spotify_id"] = ids
     filtered_df["spotify_name"] = names
     filtered_df["spotify_artist"] = artists
     filtered_df["spotify_album"] = albums
+    filtered_df["release_date"] = release_dates
+    filtered_df["duration_ms"] = durations
 
     print("Writing to {0}".format(track_ids_file))
 

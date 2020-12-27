@@ -77,7 +77,11 @@ def query_track_data(config_path):
 
     amount_of_tracks = len(tracks)
     print("Getting {0} tracks".format(amount_of_tracks))
+    counter = 100
     for index, a_track in enumerate(tracks):
+        if counter == index:
+            print("Got {0}/{1}".format(counter, amount_of_tracks))
+            counter = counter + 100
         track_dict = parse_track_json(track_dict, a_track)
 
     df = pd.DataFrame.from_dict(track_dict)
