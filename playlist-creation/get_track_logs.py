@@ -1,17 +1,12 @@
 import sys
+import pandas as pd
+import pylast
+import numpy as np
+import time
+from common import utils
 
 arg = sys.argv[1]
 print(arg[::-1])
-
-import pandas as pd
-import pylast
-import re
-from datetime import datetime, date
-import pytz
-import numpy as np
-import time
-import math
-from common import utils
 
 def parse_track_json(track_dict, a_track):
 

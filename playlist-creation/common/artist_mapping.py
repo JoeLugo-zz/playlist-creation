@@ -10,3 +10,11 @@ artist_dictionary = {
     , "Big Punisher": "Big Pun"
     , "OFWGKTA": "Odd Future"
 }
+
+genre_dictionary = {
+    "Maverick City Music": "christian"
+    , "Sunday Service Choir": "gospel"
+    , "Peter Cottontale": "gospel"
+    , "Young Jeezy": "hip hop"
+    , "YBN Cordae": "hip hop"
+}

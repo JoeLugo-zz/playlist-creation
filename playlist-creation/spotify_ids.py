@@ -1,77 +1,11 @@
 import sys
-
-arg = sys.argv[1]
-print(arg[::-1])
-
-import requests
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 from common import utils
 import pandas as pd
+from common.api_calls import query_track, query_track_2, query_track_3
 
-def query_track(artist, album, track, token):
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer {0}'.format(token),
-    }
-
-    params = (
-        ('q', 'artist:{0} album:{1} track:{2}'.format(artist, album, track)),
-        ('type', 'track'),
-        ('market', 'US'),
-        ('limit', '1')
-    )
-
-    response = requests.get('https://api.spotify.com/v1/search', headers=headers, params=params).json()
-
-    if response.status_code != 201:
-        print(response.text)
-
-    return(response)
-
-def query_track_2(artist, track, token):
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer {0}'.format(token),
-    }
-
-    params = (
-        ("q", "artist:{0} track:{1}".format(artist, track)),
-        ('type', 'track'),
-        ('market', 'US'),
-        ('limit', '1')
-    )
-
-    response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
-
-    if response.status_code != 201:
-        print(response.text)
-
-    return(response)
-
-def query_track_3(track, token):
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer {0}'.format(token),
-    }
-
-    params = (
-        ("q", "track:{0}".format(track)),
-        ('type', 'track'),
-        ('market', 'US'),
-        ('limit', '1')
-    )
-
-    response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
-
-    if response.status_code != 201:
-        print(response.text)
-
-    return(response)
+arg = sys.argv[1]
+print(arg[::-1])
 
 def get_spotify_ids(config_path):
 
@@ -108,48 +42,48 @@ def get_spotify_ids(config_path):
     for i, row in filtered_df.iterrows():
         try:
             try:
-                track_object = query_track(row['artist'], row['album'], row['title'], token)['tracks']['items'][0]
+                track_object = query_track(row["artist"], row["album"], row["title"], token)["tracks"]["items"][0]
             except:
                 try:
-                    track_object = query_track(row['artist'], row['album'], row['title'].replace("'",""), token)['tracks']['items'][0]
+                    track_object = query_track(row["artist"], row["album"], row["title"].replace("'",""), token)["tracks"]["items"][0]
                 except:
                     try:
-                        track_object = query_track(row['artist'], row['album'].replace("'",""), row['title'].replace("'",""), token)['tracks']['items'][0]
+                        track_object = query_track(row["artist"], row["album"].replace("'",""), row["title"].replace("'",""), token)["tracks"]["items"][0]
                     except:
                         try:
-                            track_object = query_track_2(row['artist'], row['title'], token)['tracks']['items'][0]
+                            track_object = query_track_2(row["artist"], row["title"], token)["tracks"]["items"][0]
                         except:
                             try:
-                                track_object = query_track(row['artist'], row['album'], row['title'].split('[')[0], token)['tracks']['items'][0]
+                                track_object = query_track(row["artist"], row["album"], row["title"].split("[")[0], token)["tracks"]["items"][0]
                             except:
                                 try:
-                                    track_object = query_track(row['artist'], row['album'], row['title'].split('(')[0], token)['tracks']['items'][0]
+                                    track_object = query_track(row["artist"], row["album"], row["title"].split("(")[0], token)["tracks"]["items"][0]
                                 except:
                                     try:
-                                        track_object = query_track(row['artist'], row['album'], row['title'].split(' - ')[0], token)['tracks']['items'][0]
+                                        track_object = query_track(row["artist"], row["album"], row["title"].split(" - ")[0], token)["tracks"]["items"][0]
                                     except:
-                                        track_object = query_track_3(row['title'], token)['tracks']['items'][0]
+                                        track_object = query_track_3(row["title"], token)["tracks"]["items"][0]
 
         except:
             print(row)
-            wrong_names.append(row['title'])
-            wrong_artists.append(row['artist'])
-            wrong_artists.append(row['album'])
+            wrong_names.append(row["title"])
+            wrong_artists.append(row["artist"])
+            wrong_artists.append(row["album"])
 
-        id = track_object['id']
-        name = track_object['name']
-        artist = track_object['artists'][0]['name']
-        album = track_object['album']['name']
+        id = track_object["id"]
+        name = track_object["name"]
+        artist = track_object["artists"][0]["name"]
+        album = track_object["album"]["name"]
 
         ids.append(id)
         names.append(name)
         artists.append(artist)
         albums.append(album)
 
-    filtered_df['spotify_id'] = ids
-    filtered_df['spotify_name'] = names
-    filtered_df['spotify_artist'] = artists
-    filtered_df['spotify_album'] = albums
+    filtered_df["spotify_id"] = ids
+    filtered_df["spotify_name"] = names
+    filtered_df["spotify_artist"] = artists
+    filtered_df["spotify_album"] = albums
 
     print("Writing to {0}".format(track_ids_file))
 

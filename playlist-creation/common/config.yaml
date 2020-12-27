@@ -2,7 +2,7 @@ playlist_creation:
   params:
     num_of_tracks: 15
     include: "hip hop, rap"
-    exclide: "christian, gospel"
+    exclude: "christian, gospel"
     playlist_name: Top Gospel
     filter_type: genres
     input_file: ../saved_files/genres/genre_test.csv

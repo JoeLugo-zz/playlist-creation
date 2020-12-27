@@ -1,46 +1,15 @@
 import sys
-
-arg = sys.argv[1]
-print(arg[::-1])
-
-import re
 import pandas as pd
-from datetime import date, datetime
+from datetime import datetime
 import pytz
 from common import utils
 import numpy as np
-
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
-from common.artist_mapping import artist_dictionary
-import requests
+from common.artist_mapping import artist_dictionary, genre_dictionary
+from common.api_calls import query_artist
 
-def query_artist(artist, token):
-    headers = {
-        "Accept": "application/json"
-        , "Content-Type": "application/json"
-        , "Authorization": "Bearer {0}".format(token)
-    }
-
-    params = (
-        ("q", "artist:{0}".format(artist))
-        , ("type", "artist")
-        , ("market", "US")
-        , ("limit", "15")
-    )
-
-    response = requests.get("https://api.spotify.com/v1/search", headers=headers, params=params).json()
-
-    if response.status_code != 201:
-        print(response.text)
-
-    return(response)
-
-def remove_special_characters(string_value):
-    new_string = re.sub("[^A-Za-z0-9]+", "", string_value)
-
-    return(new_string)
+arg = sys.argv[1]
+print(arg[::-1])
 
 def get_genres(config_path):
 
@@ -59,7 +28,7 @@ def get_genres(config_path):
     track_ids_df = pd.read_csv(track_ids_file)
     track_logs_df = pd.read_csv(track_logs_file)
 
-    joined_ids_df = pd.merge(track_logs_df, track_ids_df, on=['title','artist','album'], how='left')
+    joined_ids_df = pd.merge(track_logs_df, track_ids_df, on=["title","artist","album"], how="left")
 
     scope = "user-top-read"
     token = util.prompt_for_user_token(spotify_user, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
@@ -106,7 +75,7 @@ def get_genres(config_path):
 
             continue
 
-        if (artist_results["name"].lower() == artist_value.lower()) | (remove_special_characters(artist_results["name"].lower()) == remove_special_characters(artist_value.lower())):
+        if (artist_results["name"].lower() == artist_value.lower()) | (utils.remove_special_characters(artist_results["name"].lower()) == utils.remove_special_characters(artist_value.lower())):
             artist_to_match_value = artist_value
             artist_query_value = artist_results["name"]
             popularity_value = artist_results["popularity"]
@@ -115,7 +84,7 @@ def get_genres(config_path):
         else:
             for val in track_results["artists"]["items"]:
 
-                if remove_special_characters(val["name"].lower()) == remove_special_characters(artist_value.lower()):
+                if utils.remove_special_characters(val["name"].lower()) == utils.remove_special_characters(artist_value.lower()):
                     artist_to_match_value = artist_value
                     artist_query_value = val["name"]
                     popularity_value = val["popularity"]
@@ -123,6 +92,9 @@ def get_genres(config_path):
                     genres_value = val["genres"]
 
                     break
+
+        if i in genre_dictionary.keys():
+            genres_value = "['{0}']".format(genre_dictionary[i])
 
         artist_to_match_list.append(artist_to_match_value)
         artist_name_list.append(artist_query_value)
@@ -132,32 +104,32 @@ def get_genres(config_path):
         artist_original_list.append(artist_original_value)
 
     artist_id_df = pd.DataFrame({
-        'artist_to_match': artist_name_list
-        , 'artist_query': artist_to_match_list
-        , 'artist_original': artist_original_list
-        , 'popularity': popularity_list
-        , 'artist_id': artist_id_list
-        , 'genres': genres_list
+        "artist_to_match": artist_name_list
+        , "artist_query": artist_to_match_list
+        , "artist_original": artist_original_list
+        , "popularity": popularity_list
+        , "artist_id": artist_id_list
+        , "genres": genres_list
     })
 
-    print("Getting joined table ready ")
+    print("Getting joined table ready")
 
-    joined_df = pd.merge(joined_ids_df, artist_id_df, left_on=['artist'], right_on=['artist_original'], how='left')
+    joined_df = pd.merge(joined_ids_df, artist_id_df, left_on=["artist"], right_on=["artist_original"], how="left")
 
-    local_format = '%d %b %Y, %H:%M'
-    gmt = pytz.timezone('GMT')
-    eastern = pytz.timezone('US/Eastern')
+    local_format = "%d %b %Y, %H:%M"
+    gmt = pytz.timezone("GMT")
+    eastern = pytz.timezone("US/Eastern")
 
-    joined_df['playback_date_new'] = [datetime.strptime(val, local_format) for val in joined_df['playback_date']]
-    joined_df['eastern_time'] = [gmt.localize(val).astimezone(eastern) for val in joined_df['playback_date_new']]
-    joined_df['weekday'] = [val.weekday() for val in joined_df['eastern_time'].tolist()]
+    joined_df["playback_date_new"] = [datetime.strptime(val, local_format) for val in joined_df["playback_date"]]
+    joined_df["eastern_time"] = [gmt.localize(val).astimezone(eastern) for val in joined_df["playback_date_new"]]
+    joined_df["weekday"] = [val.weekday() for val in joined_df["eastern_time"].tolist()]
 
-    joined_df_sorted = joined_df.sort_values('eastern_time')
-    joined_df_sorted['lag_date'] = joined_df_sorted['eastern_time'].shift(1)
-    joined_df_sorted['diff'] = joined_df_sorted['eastern_time'] - joined_df_sorted['lag_date']
-    joined_df_sorted['diff_new'] = [(val.seconds)/60 for val in joined_df_sorted['diff']]
+    joined_df_sorted = joined_df.sort_values("eastern_time")
+    joined_df_sorted["lag_date"] = joined_df_sorted["eastern_time"].shift(1)
+    joined_df_sorted["diff"] = joined_df_sorted["eastern_time"] - joined_df_sorted["lag_date"]
+    joined_df_sorted["diff_new"] = [(val.seconds)/60 for val in joined_df_sorted["diff"]]
 
-    joined_df_sorted_filtered = joined_df_sorted[joined_df_sorted['diff_new'] > 0]
+    joined_df_sorted_filtered = joined_df_sorted[joined_df_sorted["diff_new"] > 0]
 
     print("Writing to {0}".format(genre_file))
     joined_df_sorted_filtered.to_csv(genre_file, index=False)
